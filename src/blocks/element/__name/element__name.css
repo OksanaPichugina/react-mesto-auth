@@ -1,0 +1,11 @@
+.element__name {
+  margin: 0;
+  padding: 0;
+  width: 246px;
+  margin-left: auto;
+  margin-right: auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 30px;
+}
