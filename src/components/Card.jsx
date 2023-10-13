@@ -3,10 +3,10 @@ export default function Card(props) {
         props.onCardClick(props.card);
     } 
     return (
-        <div id = "element-template">
+        <div>
         <li className="element">
             <button type="button" className="element__delite"></button>
-            <img className="element__image" style={{ backgroundImage: `url(${props.card.link})` }} onClick={handleClick}  />
+            <img className="element__image" src = {props.card.link} onClick={handleClick}  alt='{props.card.name}'/>
             <div className="element__name">
                 <h2 className="element__text">{props.card.name}</h2>
                 <div className="element__like">

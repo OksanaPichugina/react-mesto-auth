@@ -1,29 +1,34 @@
 import apiRes from '../utils/Api.js';
-import Cards from './Cards.jsx'
+import Card from './Card.jsx'
 import React from 'react'; 
 export default function Main(props) {
-    const [userName, setuserName] = React.useState('');
-    const [userDescription, setuserDescription] = React.useState('');
-    const [userAvatar, setuserAvatar] = React.useState('');
-    const [cards, setcard] = React.useState([]);
+    const [userName, setUserName] = React.useState('');
+    const [userDescription, setUserDescription] = React.useState('');
+    const [userAvatar, setUserAvatar] = React.useState('');
+    const [cards, setCard] = React.useState([]);
     React.useEffect(() => {
        apiRes.getMethodUser()
        .then((res) => {
-            setuserName(res.name);
-            setuserDescription(res.about);
-            setuserAvatar(res.avatar)
+            setUserName(res.name);
+            setUserDescription(res.about);
+            setUserAvatar(res.avatar)
         })
-        apiRes.getMethodCards()
-        .then((res) => {
-            setcard(res);
-        })
+        .catch((err) => { 
+            //попадаем сюда если один из промисов завершатся ошибкой 
+            console.log(err); 
+          })
+        
     }, [])
 
     React.useEffect(() => {
          apiRes.getMethodCards()
          .then((res) => {
-             setcard(res);
+             setCard(res);
          })
+         .catch((err) => { 
+            //попадаем сюда если один из промисов завершатся ошибкой 
+            console.log(err); 
+          })
      },[])
     return (
         <main className="content">
@@ -44,7 +49,7 @@ export default function Main(props) {
                 <ul className="elements__list">
                     {
                         
-                        cards.map((item) => {return <Card card = {item} onCardClick = {props.onCardClick}/>})
+                        cards.map((item) => { return <Card key={`${item._id}`} card = {item} onCardClick = {props.onCardClick}/>})
                     }
                 </ul>                
             </section>
