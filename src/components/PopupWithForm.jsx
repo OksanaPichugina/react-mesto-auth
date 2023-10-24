@@ -6,6 +6,7 @@ export default function PopupWithForm(props) {
     >
       <div className="popup__container">
         <form
+          onSubmit={props.onSubmit}
           id={`${props.name}-form`}
           className="popup__form"
           name={`form-${props.name}`}

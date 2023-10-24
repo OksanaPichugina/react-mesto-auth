@@ -1,36 +1,12 @@
 import apiRes from "../utils/Api.js";
 import Card from "./Card.jsx";
 import React from "react";
+import { CurrentUserContext } from "../contexts/CurrentUserContext.jsx";
+import { CardContext } from "../contexts/CardContext.jsx";
 export default function Main(props) {
-  const [userName, setUserName] = React.useState("");
-  const [userDescription, setUserDescription] = React.useState("");
-  const [userAvatar, setUserAvatar] = React.useState("");
-  const [cards, setCards] = React.useState([]);
-  React.useEffect(() => {
-    apiRes
-      .getMethodUser()
-      .then((res) => {
-        setUserName(res.name);
-        setUserDescription(res.about);
-        setUserAvatar(res.avatar);
-      })
-      .catch((err) => {
-        //попадаем сюда если один из промисов завершатся ошибкой
-        console.log(err);
-      });
-  }, []);
+  const currentUser = React.useContext(CurrentUserContext);
+  const cards = React.useContext(CardContext);
 
-  React.useEffect(() => {
-    apiRes
-      .getMethodCards()
-      .then((res) => {
-        setCards(res);
-      })
-      .catch((err) => {
-        //попадаем сюда если один из промисов завершатся ошибкой
-        console.log(err);
-      });
-  }, []);
   return (
     <main className="content">
       <section className="profile">
@@ -41,17 +17,21 @@ export default function Main(props) {
             className="profile__avatar"
             onClick={props.onEditAvatar}
           >
-            <img className="profile__img" src={userAvatar} alt="аватарка" />
+            <img
+              className="profile__img"
+              src={currentUser.avatar}
+              alt="аватарка"
+            />
           </button>
           <div className="profile__info">
-            <h1 className="profile__name">{userName}</h1>
+            <h1 className="profile__name">{currentUser.name}</h1>
             <button
               type="button"
               id="open-popup"
               className="profile__edit-button"
               onClick={props.onEditProfile}
             ></button>
-            <p className="profile__job">{userDescription}</p>
+            <p className="profile__job">{currentUser.about}</p>
           </div>
         </div>
         <button
@@ -64,11 +44,17 @@ export default function Main(props) {
       <section className="elements">
         <ul className="elements__list">
           {cards.map((item) => {
+            const isOwn = item.owner._id === currentUser._id;
+            const isLiked = item.likes.some((i) => i._id === currentUser._id);
             return (
               <Card
                 key={`${item._id}`}
                 card={item}
                 onCardClick={props.onCardClick}
+                isOwn={isOwn}
+                onCardLike={props.onCardLike}
+                isLiked={isLiked}
+                onCardDelete={props.onCardDelete}
               />
             );
           })}

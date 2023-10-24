@@ -45,7 +45,7 @@ class Api {
       })
   }
 
-  patchMethod(name, about) {
+  setUserInfo(name, about) {
     return fetch(`${this._url}/users/me`, {
       method: "PATCH",
       headers: this._headers,
@@ -82,25 +82,28 @@ class Api {
       })
   }
 
-  putLike(id) {
-    return fetch(`${this._url}/cards/${id}/likes`, {
-      method: "PUT",
-      headers: this._headers,
-    })
-      .then((res) => {
-        return this._getResponseData(res);
+
+  
+  changeLikeCardStatus(id, isLiked){
+    if (isLiked){
+      return fetch(`${this._url}/cards/${id}/likes`, {
+        method: "DELETE",
+        headers: this._headers,
       })
+        .then((res) => {
+          return this._getResponseData(res);
+        })
+    } else {
+      return fetch(`${this._url}/cards/${id}/likes`, {
+        method: "PUT",
+        headers: this._headers,
+      })
+        .then((res) => {
+          return this._getResponseData(res);
+        })
+    }
   }
 
-  removeLike(id) {
-    return fetch(`${this._url}/cards/${id}/likes`, {
-      method: "DELETE",
-      headers: this._headers,
-    })
-      .then((res) => {
-        return this._getResponseData(res);
-      })
-  }
 }
 
 const api = {
