@@ -5,10 +5,10 @@ export default function AddPlacePopup(props) {
   const card = React.useContext(CardContext);
   const [place, setPlace] = React.useState("");
   const [link, setLink] = React.useState("");
-  // React.useEffect(() => {
-  //     setPlace(currentUser.name);
-  //     setLink(currentUser.about);
-  //   }, [currentUser]);
+  React.useEffect(() => {
+    setPlace("");
+    setLink("");
+  }, [!props.isOpen]);
   function handleChangePlace(e) {
     setPlace(e.target.value);
   }
@@ -29,6 +29,8 @@ export default function AddPlacePopup(props) {
       name={"add"}
       title={"Новое место"}
       onSubmit={handleSubmit}
+      buttonText = {'Создать'}
+      closeAllPopups={props.closeAllPopups}
     >
       <input
         name="place"

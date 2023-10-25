@@ -8,7 +8,7 @@ export default function EditProfilePopup(props) {
   React.useEffect(() => {
     setName(currentUser.name);
     setDescription(currentUser.about);
-  }, [currentUser]);
+  }, [currentUser, props.isOpen]);
   function handleChangeName(e) {
     setName(e.target.value);
   }
@@ -28,6 +28,8 @@ export default function EditProfilePopup(props) {
       name={"edit"}
       title={"Редактировать профиль"}
       isOpen={props.isOpen}
+      buttonText = 'Сохранить'
+      closeAllPopups={props.closeAllPopups}
     >
       <input
         name="name"

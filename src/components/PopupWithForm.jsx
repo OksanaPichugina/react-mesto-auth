@@ -13,8 +13,8 @@ export default function PopupWithForm(props) {
         >
           <h2 className="popup__title">{`${props.title}`}</h2>
           <div className="form_dop">{props.children}</div>
-          <button type="submit" className="popup__submit popup__button-save">
-            Сохранить
+          <button type="submit" className="popup__submit popup__button-save"  >
+          {props.buttonText}
           </button>
         </form>
         <button
