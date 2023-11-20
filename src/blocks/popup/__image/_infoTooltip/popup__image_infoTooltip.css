@@ -1,0 +1,8 @@
+.popup__image_infoTooltip {
+  margin: 0;
+  margin-top: 60px;
+  object-fit: cover;
+  overflow: hidden;
+  width: 120px;
+  height: 120px;
+}

@@ -1,0 +1,17 @@
+.popup__input_log{
+    margin: 0;
+    border: 0;
+    padding: 0;
+    border-bottom: 1px solid #ccc;
+    font-family: "Inter", Arial;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 17px;
+    color: #ccc;
+    height: 27px;
+    background-color: black;
+    width:358px ;
+    height: 27px;
+    margin-bottom: 30px;
+}
