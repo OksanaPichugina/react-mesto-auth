@@ -10,7 +10,7 @@ export default function Main(props) {
 
   return (
     <>
-      <Header text="" email=''/>
+      <Header text="Выйти" email={currentUser.email} linktostr="/sign-in" loggedIn = {props.loggedIn} onSignOut={props.onSignOut}/>
       <main className="content">
         <section className="profile">
           <div className="profile__information">

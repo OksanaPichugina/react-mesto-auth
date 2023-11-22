@@ -115,5 +115,4 @@ const api = {
 };
 
 const apiRes = new Api(api);
-console.log(apiRes)
 export default apiRes;

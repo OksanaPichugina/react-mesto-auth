@@ -16,8 +16,8 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import Login from "./Login.jsx";
 import Register from "./Register.jsx";
 import ProtectedRoute from "./ProtectedRoute.jsx";
-import * as auth from './Auth.jsx';
-import {Link, useNavigate} from 'react-router-dom';
+import * as auth from "./Auth.jsx";
+import { Link, useNavigate } from "react-router-dom";
 function App() {
   const [isEditProfilePopupOpen, setEditProfilePopupOpen] =
     React.useState(false);
@@ -30,11 +30,67 @@ function App() {
     avatar: "",
     _id: "",
     about: "",
+    email:''
   });
 
   const [cards, setCards] = React.useState([]);
+const goodOrBad = false;
+
+  const [loggedIn, setLoggedIn] = React.useState(false);
+  const navigate = useNavigate();
+
+  const handleLogin = ({ password, email }) => {
+    return auth.authorize(password, email).then((res) => { console.log(res);
+      if (res.token) {
+        setLoggedIn(true);
+        localStorage.setItem("token", res.token);
+        navigate("/");
+      }
+    });
+  };
 
   React.useEffect(() => {
+    const jwt = localStorage.getItem("token");
+    if (jwt) {
+      authFunc(jwt);
+    }
+    console.log(loggedIn)
+  }, [loggedIn]);
+
+  const authFunc = (token) => {
+    return auth.getContent(token).then((res) => {
+      if (res) {
+        setLoggedIn(true);
+        setCurrentUser({ ...currentUser,
+          email: res.data.email,
+          _id: res.data._id
+        });
+        console.log(res.data.email)
+        console.log(currentUser);
+      }
+    });
+  };
+
+  const handleRegister = ({ password, email }) => {
+    return auth.register(password, email).then(()=>{setInfoTooltipOpen(true)}).then((res) => {
+      if (!res || res.statusCode === 400){
+        goodOrBad = false
+        throw new Error("Что-то пошло не так");
+      } else {goodOrBad = true}
+        
+      return res;
+    });
+  };
+
+const onSignOut = () => {
+  localStorage.removeItem("token");
+  setLoggedIn(false);
+  navigate("/sign-in");
+ };
+
+  
+  React.useEffect(() => {
+    if (loggedIn) {
     apiRes
       .getMethodCards()
       .then((res) => {
@@ -44,7 +100,9 @@ function App() {
         //попадаем сюда если один из промисов завершатся ошибкой
         console.log(err);
       });
-  }, []);
+  }}, [loggedIn]);
+
+
 
   function handleCardLike(card) {
     // Снова проверяем, есть ли уже лайк на этой карточке
@@ -89,23 +147,28 @@ function App() {
   function handleCardClick(card) {
     setselectedCard(card);
   }
-
+  
   React.useEffect(() => {
+    console.log('!@!@')
+      console.log(loggedIn)
+    if (loggedIn){
     apiRes
       .getMethodUser()
       .then((res) => {
-        setCurrentUser({
+        setCurrentUser({ ...currentUser,
           name: res.name,
           avatar: res.avatar,
           _id: res._id,
           about: res.about,
         });
+        console.log(currentUser)
       })
       .catch((err) => {
         //попадаем сюда если один из промисов завершатся ошибкой
         console.log(err);
       });
-  }, []);
+  }
+}, [loggedIn]);
 
   function closeAllPopups() {
     setEditAvatarPopupOpen(false);
@@ -119,7 +182,7 @@ function App() {
     apiRes
       .setUserInfo(name, job)
       .then((res) => {
-        setCurrentUser({
+        setCurrentUser({ ...currentUser,
           name: res.name,
           avatar: res.avatar,
           _id: res._id,
@@ -139,7 +202,7 @@ function App() {
     apiRes
       .patchAvatar(avatar)
       .then((res) => {
-        setCurrentUser({
+        setCurrentUser({ ...currentUser,
           name: res.name,
           avatar: res.avatar,
           _id: res._id,
@@ -170,38 +233,6 @@ function App() {
       });
   }
 
-  const [loggedIn, setLoggedIn] = React.useState(false);
-  const navigate = useNavigate();
-  const handleLogin = (e) => {
-    e.preventDefault();
-    setLoggedIn(true)
-} 
-
-React.useEffect(() => {
-tokenCheck();
-}, [])
-
-const tokenCheck = () => {
-  // если у пользователя есть токен в localStorage,
-  // эта функция проверит валидность токена
-    const jwt = localStorage.getItem('jwt');
-  if (jwt){
-    // проверим токен
-            auth.checkToken(jwt).then((res) => {
-        if (res){
-          setCurrentUser({
-            name: res.email,
-            avatar: '',
-            _id: res._id,
-            about: res.email,
-          });
-                    // авторизуем пользователя
-          setLoggedIn(true);
-          navigate("/main", {replace: true})
-        }
-      });
-  }
-}  
 
   return (
     <CurrentUserContext.Provider value={currentUser}>
@@ -209,7 +240,6 @@ const tokenCheck = () => {
         <div className="App">
           <div className="body">
             <div className="page">
-              
               <Routes>
                 <Route
                   path="/"
@@ -223,11 +253,18 @@ const tokenCheck = () => {
                       onCardClick={handleCardClick}
                       onCardLike={handleCardLike}
                       onCardDelete={handleCardDelete}
+                      onSignOut={onSignOut}
                     />
                   }
                 />
-                <Route path="/sign-in" element={<Login handleLogin={handleLogin} />} />
-                <Route path="/sign-up" element={<Register />} />
+                <Route
+                  path="/sign-in"
+                  element={<Login handleLogin={handleLogin} loggedIn = {loggedIn}/>}
+                />
+                <Route
+                  path="/sign-up"
+                  element={<Register handleRegister={handleRegister} loggedIn = {loggedIn}  />}
+                />
               </Routes>
               <Footer />
             </div>
@@ -253,7 +290,11 @@ const tokenCheck = () => {
             />
 
             <ImagePopup card={selectedCard} closeAllPopups={closeAllPopups} />
-            <InfoTooltip closeAllPopups={closeAllPopups} isOpen={isInfoTooltipOpen}/>
+            <InfoTooltip
+              closeAllPopups={closeAllPopups}
+              isOpen={isInfoTooltipOpen}
+              goodOrBad = {goodOrBad}
+            />
           </div>
         </div>
       </CardContext.Provider>

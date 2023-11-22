@@ -1,42 +1,38 @@
 import Header from "./Header.jsx";
-import React, {useState} from 'react';
-import {Link, useNavigate} from 'react-router-dom';
-import * as auth from './Auth.jsx';
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import * as auth from "./Auth.jsx";
 export default function Login(props) {
-  const [formValue, setFormValue] = useState({
-    email: '',
-    password: ''
-  })
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const navigate = useNavigate();
-  const handleChange = (e) => {
-    const {name, value} = e.target;
+  const resetForm = () => {
+    setEmail("");
+    setPassword("");
+  };
 
-    setFormValue({
-      ...formValue,
-      [name]: value
-    });
-  }
   const handleSubmit = (e) => {
     e.preventDefault();
-  
-    if (!formValue.email || !formValue.password){
-      return;
-    }
-    auth.authorize(formValue.email, formValue.password)
-      .then((data) => {
-        if (data.jwt){
-          setFormValue({email: '', password: ''});
-          props.handleLogin();
-          navigate('/', {replace: true});
-        }
-      })
-      .catch(err => console.log(err));
-  }
+    props.handleLogin({ password, email })
+    .then(
+      () => {
+        resetForm(); // Сброс значений email и password
+        console.log(email);
+      }
+    )
+    .then(() => navigate("/"))
+    .catch(() => console.log("Что-то пошло не так!!!"));
+  };
 
+  useEffect(() => {
+    if (localStorage.getItem("token")) {
+      navigate("/");
+    }
+  }, []);
 
   return (
     <>
-      <Header text="Регистрация"  email='' linktostr='/sign-up'/>
+      <Header text="Регистрация" email="" linktostr="/sign-up" loggedIn = {props.loggedIn} />
       <form className="popup__form_log" onSubmit={handleSubmit}>
         <h2 className="popup__title_log">Вход</h2>
         <div className="form_dop">
@@ -49,7 +45,8 @@ export default function Login(props) {
             maxLength="40"
             required
             className="popup__input_log"
-            value={formValue.email} onChange={handleChange}
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
           />
           <input
             name="password"
@@ -60,10 +57,15 @@ export default function Login(props) {
             maxLength="40"
             required
             className="popup__input_log"
-            value={formValue.password} onChange={handleChange}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
           />
         </div>
-        <button type="submit" className="popup__button-save_log" onSubmit={handleSubmit}>
+        <button
+          type="submit"
+          className="popup__button-save_log"
+          onSubmit={handleSubmit}
+        >
           Войти
         </button>
       </form>
