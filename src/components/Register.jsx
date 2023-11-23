@@ -14,9 +14,11 @@ export default function Register(props) {
     e.preventDefault();
     props
       .handleRegister({ password, email })
-      .then(resetForm)
-      .then(() => navigate("/sign-in"))
-      .catch(() => console.log("Что-то пошло не так"));
+      .then(() => {
+        resetForm();
+        navigate("/sign-in"); 
+      })
+      .catch((err) => console.log("Что-то пошло не так",err));
   };
   useEffect(() => {
     if (localStorage.getItem("token")) {
@@ -26,7 +28,7 @@ export default function Register(props) {
 
   return (
     <>
-      <Header text="Вход" linktostr="/sign-in" loggedIn = {props.loggedIn}/>
+      <Header text="Вход" linktostr="/sign-in" loggedIn={props.loggedIn} />
       <form className="popup__form_log" onSubmit={handleSubmit}>
         <h2 className="popup__title_log">Регистрация</h2>
         <div className="form_dop">

@@ -25,10 +25,10 @@ export default function Login(props) {
   };
 
   useEffect(() => {
-    if (localStorage.getItem("token")) {
+    if (localStorage.getItem("token") && props.loggedIn) {
       navigate("/");
     }
-  }, []);
+  }, [props.loggedIn,navigate]);
 
   return (
     <>
