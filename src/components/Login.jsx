@@ -1,7 +1,7 @@
 import Header from "./Header.jsx";
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import * as auth from "./Auth.jsx";
+import * as auth from "../utils/Auth.jsx";
 export default function Login(props) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -20,13 +20,11 @@ export default function Login(props) {
         console.log(email);
       }
     )
-    .then(() => navigate("/"))
-    .catch(() => console.log("Что-то пошло не так!!!"));
   };
 
   useEffect(() => {
     if (localStorage.getItem("token") && props.loggedIn) {
-      navigate("/");
+      navigate("/",{replace: true});
     }
   }, [props.loggedIn,navigate]);
 
@@ -51,7 +49,7 @@ export default function Login(props) {
           <input
             name="password"
             id="password-input"
-            type="text"
+            type="password"
             placeholder="Пароль"
             minLength="2"
             maxLength="40"

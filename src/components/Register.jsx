@@ -1,5 +1,5 @@
 import Header from "./Header.jsx";
-import * as auth from "./Auth.jsx";
+import * as auth from "../utils/Auth.jsx";
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 export default function Register(props) {
@@ -13,16 +13,15 @@ export default function Register(props) {
   const handleSubmit = (e) => {
     e.preventDefault();
     props
-      .handleRegister({ password, email })
-      .then(() => {
-        resetForm();
-        navigate("/sign-in"); 
-      })
-      .catch((err) => console.log("Что-то пошло не так",err));
+      .handleRegister({ password, email }).then(
+        () => {
+          resetForm(); // Сброс значений email и password
+        }
+      )
   };
   useEffect(() => {
     if (localStorage.getItem("token")) {
-      navigate("/");
+      navigate("/",{replace: true});
     }
   }, []);
 
@@ -47,7 +46,7 @@ export default function Register(props) {
           <input
             name="password"
             id="password-input"
-            type="text"
+            type="password"
             placeholder="Пароль"
             minLength="2"
             maxLength="40"

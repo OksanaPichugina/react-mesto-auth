@@ -15,7 +15,7 @@ import { Routes, Route } from "react-router-dom";
 import Login from "./Login.jsx";
 import Register from "./Register.jsx";
 import ProtectedRoute from "./ProtectedRoute.jsx";
-import * as auth from "./Auth.jsx";
+import * as auth from "../utils/Auth.jsx";
 import { useNavigate } from "react-router-dom";
 function App() {
   const [isEditProfilePopupOpen, setEditProfilePopupOpen] =
@@ -44,7 +44,7 @@ function App() {
       if (res.token) {
         setLoggedIn(true);
         localStorage.setItem("token", res.token);
-        navigate("/");
+        navigate("/",{replace: true});
       }
     }) .catch((err) => {
       console.log(err);
@@ -58,7 +58,7 @@ function App() {
       authFunc(jwt);
     }
     // console.log(loggedIn)
-  }, [jwt]);
+  }, []);
 
   const authFunc = (token) => {
     return auth.getContent(token).then((res) => {
@@ -69,10 +69,11 @@ function App() {
           email: res.data.email,
           _id: res.data._id,
         }));
+        navigate('/', {replace: true})
         //console.log(res.data.email)
         //console.log(currentUser);
       }
-    });
+    }).catch(() => navigate('/sign-in', {replace: true}))
   };
 
   const handleRegister = ({ password, email }) => {
@@ -80,7 +81,7 @@ function App() {
       .register(password, email)
       .then((res) => {
         setInfoTooltipStatus("success");
-
+        navigate("/sign-in", {replace: true})
         return res;
       })
       .catch((err) => {
@@ -97,7 +98,7 @@ function App() {
   const onSignOut = () => {
     localStorage.removeItem("token");
     setLoggedIn(false);
-    navigate("/sign-in");
+    navigate("/sign-in",{replace: true});
   };
 
   React.useEffect(() => {
