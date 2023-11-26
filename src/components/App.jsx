@@ -44,6 +44,10 @@ function App() {
       if (res.token) {
         setLoggedIn(true);
         localStorage.setItem("token", res.token);
+        setCurrentUser((prevState) => ({
+          ...prevState,
+          email: email,         
+      }));
         navigate("/",{replace: true});
       }
     }) .catch((err) => {
@@ -51,10 +55,11 @@ function App() {
     
     })
   };
-  const jwt = localStorage.getItem("token");
+  
   React.useEffect(() => {
-    
+    const jwt = localStorage.getItem("token");
     if (jwt) {
+      
       authFunc(jwt);
     }
     // console.log(loggedIn)
@@ -64,11 +69,11 @@ function App() {
     return auth.getContent(token).then((res) => {
       if (res) {
         setLoggedIn(true);
-        setCurrentUser((prevState) => ({
-          ...prevState,
-          email: res.data.email,
-          _id: res.data._id,
-        }));
+        // setCurrentUser((prevState) => ({
+        //   ...prevState,
+        //   email: res.data.email,
+        //   _id: res.data._id,
+        // }));
         navigate('/', {replace: true})
         //console.log(res.data.email)
         //console.log(currentUser);
@@ -91,7 +96,7 @@ function App() {
       .finally(() => {
         setTimeout(function () {
           setInfoTooltipStatus("");
-        }, 10000);
+        }, 2000);
       });
   };
 

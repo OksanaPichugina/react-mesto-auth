@@ -19,11 +19,18 @@ export default function Register(props) {
         }
       )
   };
+
   useEffect(() => {
-    if (localStorage.getItem("token")) {
-      navigate("/",{replace: true});
+    if (!props.loggedIn) {
+      resetForm();
     }
-  }, []);
+}, [props.loggedIn]);
+
+  // useEffect(() => {
+  //   if (localStorage.getItem("token")) {
+  //     navigate("/",{replace: true});
+  //   }
+  // }, []);
 
   return (
     <>

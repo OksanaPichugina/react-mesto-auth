@@ -14,19 +14,17 @@ export default function Login(props) {
   const handleSubmit = (e) => {
     e.preventDefault();
     props.handleLogin({ password, email })
-    .then(
-      () => {
-        resetForm(); // Сброс значений email и password
-        console.log(email);
-      }
-    )
   };
-
   useEffect(() => {
-    if (localStorage.getItem("token") && props.loggedIn) {
-      navigate("/",{replace: true});
+    if (!props.loggedIn) {
+      resetForm();
     }
-  }, [props.loggedIn,navigate]);
+}, [props.loggedIn]);
+  // useEffect(() => {
+  //   if (localStorage.getItem("token") && props.loggedIn) {
+  //     navigate("/",{replace: true});
+  //   }
+  // }, [props.loggedIn,navigate]);
 
   return (
     <>
