@@ -69,11 +69,11 @@ function App() {
     return auth.getContent(token).then((res) => {
       if (res) {
         setLoggedIn(true);
-        // setCurrentUser((prevState) => ({
-        //   ...prevState,
-        //   email: res.data.email,
-        //   _id: res.data._id,
-        // }));
+         setCurrentUser((prevState) => ({
+           ...prevState,
+           email: res.data.email,
+           _id: res.data._id,
+         }));
         navigate('/', {replace: true})
         //console.log(res.data.email)
         //console.log(currentUser);
